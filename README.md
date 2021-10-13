@@ -5,4 +5,4 @@ Specifically, finds all occurences of subsequences with a hamming distance of 0 
 Then filters out all the potential sites which aren't conserved across more than (conservation threshold)% of the sequences in the alignment.
 
 random_trsb.py:
-Randomly generates an amount of TRS-B site locations given an alignment, TRS-B length and the amount of sites.
+Randomly generates a variable amount of TRS-B site locations given: an alignment, TRS-B site length, and the amount of sites to generate.
