@@ -1,0 +1,6 @@
+
+*.fasta
+alignments/tempfile
+alignments/test.txt
+*.txt
+*.csv

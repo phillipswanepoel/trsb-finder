@@ -1,4 +1,12 @@
-import edlib
+from fuzzysearch import find_near_matches
+
+#find_near_matches('PATTERN', '---PATERN---', max_l_dist=1)
+#substring first
+#[Match(start=3, end=9, dist=1, matched="PATERN")]
+
+#to get start:
+#kek = [Match(start=3, end=9, dist=1, matched="PATERN")]
+#kek[0].start
 
 class trsb_finder:
 	def __init__(self, fasta_filename, query, conservation_threshold):
@@ -31,7 +39,7 @@ class trsb_finder:
 		for x in a:
 			x[1] = x[1].replace('\n', '')
 
-		self.alignment_sequences = [y[1] for y in a]			
+		self.alignment_sequences = [y[1].upper() for y in a]			
 
 	def removeGaps(self):
 		#removes all gaps, stores gapless sequences
@@ -67,22 +75,16 @@ class trsb_finder:
 			self.alignment_sequences_no_gaps.append(sequence.translate({45: None}))
 
 	def findSites(self):
-		for s in self.alignment_sequences_no_gaps:
-			d = edlib.align(query = self.query, target = s, k=0, mode = "HW", task = "locations", additionalEqualities=[("a", "A"), ("c", "C"), ("t", "T"), ("g", "G")])			
-			locations = d["locations"] 
-			starting_locations = {p[0] for p in locations}
+		for s in self.alignment_sequences_no_gaps:	
+			#exact matches
+			exact_matches = find_near_matches(self.query, s, max_l_dist=0)
+			starting_locations = {m.start for m in exact_matches}
 
 			self.trsb_locations_no_gaps_exact.append(starting_locations)
 
 			#Now we do inexact matching
-			inexact_starting_locations = set()
-			#Since edlib stops checking for inexact matches if exact matches are found:
-			#need to do something very inefficient and dumb here, namely repeating search n times with nth character in query replaced by a wildcard
-			for i in range(len(self.query)):
-				new_query = self.query[:i] + "*" + self.query[i+1:]	
-				d = edlib.align(query = new_query, target = s, k=1, mode = "HW", task = "locations", additionalEqualities=[("*", "A"), ("*", "C"), ("*", "G"), ("*", "T"), ("a", "A"), ("c", "C"), ("t", "T"), ("g", "G"), ("*", "a"), ("*", "c"), ("*", "g"), ("*", "t")])
-				locations = d["locations"]
-				inexact_starting_locations = inexact_starting_locations | {p[0] for p in locations}
+			inexact_matches = find_near_matches(self.query, s, max_l_dist=1)
+			inexact_starting_locations = {m.start for m in inexact_matches}			
 
 			self.trsb_locations_no_gaps_inexact.append(inexact_starting_locations - starting_locations)
 
@@ -171,7 +173,7 @@ if __name__ == '__main__':
 	#-----------------------------------------------------------------
 	#VARIABLES
 	coronavirus_genera = "Pedacovirus"
-	aligmnent_path = "Pedacovirus.fasta"
+	aligmnent_path = "alignments/AAA_PedacovirusAligned.fasta"
 	TRSL_sequence = "AACTAAAC"
 	conservation = 75.0
 	#-----------------------------------------------------------------
@@ -188,9 +190,9 @@ if __name__ == '__main__':
 	all_matches = sorted(exact_matches+inexact_matches, key= lambda x: x[0])
 
 	print("EXACT MATCHES: ")
-	print(exact_matches)
-	print("INEXACT MATCHES (one edit distance from TRS-L): ")
-	print(inexact_matches)
+	print(sorted(exact_matches, key= lambda x: x[0]))
+	print("INEXACT MATCHES (one levenshtein distance from TRS-L): ")
+	print(sorted(inexact_matches, key= lambda x: x[0]))
 
 	site_len = len(TRSL_sequence)
 	seq_len = len(finder.alignment_sequences[0])
@@ -208,5 +210,11 @@ if __name__ == '__main__':
 				j+=1
 			else:
 				f.write(str(i) + "," + '0' + "\n")
+
+	#Output locations to readable csv file
+	with open(coronavirus_genera + "_trsbs.csv", 'w', newline = '\r\n') as f:
+		f.write("TRSBBP" + '\n')
+		for tup in all_matches:
+			f.write(str(tup[0]) + '\n')
 
 
