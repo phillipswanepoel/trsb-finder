@@ -172,9 +172,9 @@ if __name__ == '__main__':
 
 	#-----------------------------------------------------------------
 	#VARIABLES
-	coronavirus_genera = "Pedacovirus"
-	aligmnent_path = "alignments/AAA_PedacovirusAligned.fasta"
-	TRSL_sequence = "AACTAAAC"
+	coronavirus_genera = "Embecovirus"
+	aligmnent_path = "alignments/AAA_EmbecovirusAligned.fasta"
+	TRSL_sequence = "ATCTAAAC"
 	conservation = 75.0
 	#-----------------------------------------------------------------
 
