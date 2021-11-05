@@ -12,7 +12,7 @@ def rFasta(path):
 
 if __name__ == '__main__':
 
-	for i in range(1,21):
+	for i in range(1,31):
 		#-----------------------------------------------------------------
 		#VARIABLES	
 		alignment_choose = random.randint(1, 6)	
