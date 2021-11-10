@@ -10,29 +10,38 @@ def rFasta(path):
 
 	return [y[1] for y in a]
 
+def rCSV(path):
+	a = open(path).read().strip().split("\n")[1:]
+	a = [int(y) for y in a]
+	return a
+
+
+
 if __name__ == '__main__':
 
-	for i in range(1,31):
+	for i in range(1,21):
 		#-----------------------------------------------------------------
 		#VARIABLES	
 		alignment_choose = random.randint(1, 6)	
 		alignment_path = "alignments/" + str(alignment_choose) + ".fasta"
-		minimum_site_amount = 5
-		maximum_site_amount = 10
-		amount_of_random_trsb_sites = random.randint(minimum_site_amount, maximum_site_amount)	
+		trsb_path = "alignments/" + str(alignment_choose) + "_trsbs.csv"		
 		trsb_length = 8
-		#-----------------------------------------------------------------
+		#-----------------------------------------------------------------		
 		
-
 		alignment_sequences = rFasta(alignment_path)
+		trsb_locations = rCSV(trsb_path)		
 		seq_len = len(alignment_sequences[0])
 
-		random_sites_start_positions = set(random.sample(range(1, seq_len+1), amount_of_random_trsb_sites ))
-
+		#amount of sites to translate sites with
+		random_sites_start_position = random.sample(range(1, seq_len+1), 1)[0]	
+		
+		trsb_locations = [(x+random_sites_start_position)%seq_len for x in trsb_locations]
 		print(alignment_choose)
-		print(seq_len)
-		print(amount_of_random_trsb_sites)
-		print(random_sites_start_positions)
+		print(trsb_locations)
+		print("")
+
+		random_sites_start_positions = {x for x in trsb_locations}	
+
 		
 		#Output results to format which works with RDP
 		with open("RDP/sitesets/" + str(i) + "_" + str(alignment_choose) + ".txt", 'w', newline = '\r\n') as f:
