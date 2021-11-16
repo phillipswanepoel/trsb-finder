@@ -5,4 +5,4 @@ Specifically, finds all occurences of subsequences with a Levenshtein distance o
 Then filters out all the potential sites which aren't conserved across more than (conservation threshold)% of the sequences in the alignment.
 
 random_trsb.py:
-Randomly generates a variable amount of TRS-B site locations given: an alignment, TRS-B site length, and the amount of sites to generate.
+Generates a permuted version of a siteset file. So given some list of TRS-Bs at specific nucleotide positions for an alignment, this script generates an RDP siteset file where the positions were all translated such that the distance between them is preserved. Maximum translation length = length of genome. Wraps around ends.
