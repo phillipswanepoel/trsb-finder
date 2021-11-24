@@ -1,13 +1,5 @@
 from fuzzysearch import find_near_matches
 
-#find_near_matches('PATTERN', '---PATERN---', max_l_dist=1)
-#substring first
-#[Match(start=3, end=9, dist=1, matched="PATERN")]
-
-#to get start:
-#kek = [Match(start=3, end=9, dist=1, matched="PATERN")]
-#kek[0].start
-
 class trsb_finder:
 	def __init__(self, fasta_filename, query, conservation_threshold):
 		self.fasta_filename = fasta_filename
